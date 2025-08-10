@@ -1,0 +1,43 @@
+
+npm install axios clsx
+
+
+
+axios
+A popular HTTP client for making API requests from JavaScript.
+
+In your code, it’s used to send a POST request to your backend (/api/links) to create a short URL.
+
+Without import axios, your axios.create(...) line will throw axios is not defined.
+
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE,
+});
+
+await api.post("/api/links", payload);
+
+
+
+
+
+
+
+
+clsx
+A small utility to combine CSS class names conditionally.
+
+In your code, it decides what Tailwind classes to apply based on whether the URL has been copied:
+
+import clsx from "clsx";
+
+<button
+  className={clsx(
+    "px-3 py-1.5 rounded-md text-sm border transition",
+    copied
+      ? "bg-emerald-500 text-white border-emerald-500"
+      : "bg-white text-slate-700 border-slate-200 hover:border-slate-300"
+  )}
+>
+If you don’t import clsx, React will crash with clsx is not defined.

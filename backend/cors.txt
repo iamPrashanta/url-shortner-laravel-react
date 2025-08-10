@@ -1,0 +1,66 @@
+Why you need CORS
+CORS (Cross-Origin Resource Sharing) is a security feature in browsers that blocks requests from a different origin unless the server says, “This origin is allowed.”
+
+Example:
+
+Backend (Laravel) runs at http://127.0.0.1:8000
+
+Frontend (React) runs at http://localhost:5173
+
+These are different origins, so without CORS, your API calls from React will fail with:
+
+Access to fetch at 'http://127.0.0.1:8000/api/shorten' from origin 'http://localhost:5173' has been blocked by CORS policy.
+
+
+Laravel 11 and CORS
+Laravel 11 already includes fruitcake/laravel-cors support built-in, so you don’t need to install it separately.
+The config file is config/cors.php.
+
+
+
+ Editing config/cors.php
+You’ll configure Laravel to allow your React app to access it:
+
+return [
+
+    'paths' => ['api/*', '*'], // Which routes can be accessed cross-origin
+    'allowed_methods' => ['*'], // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
+    'allowed_origins' => ['http://localhost:5173'], // Frontend dev URL
+    'allowed_origins_patterns' => [], // Not needed unless using regex
+    'allowed_headers' => ['*'], // Allow all request headers
+    'exposed_headers' => [], // Headers exposed to browser
+    'max_age' => 0, // Browser cache time for CORS preflight
+    'supports_credentials' => false, // If you need cookies/auth, set to true
+];
+
+
+Explanation:
+
+paths → Tells Laravel which endpoints can be called cross-origin.
+'api/*' means /api/... routes are CORS-enabled. '*' means all routes.
+
+allowed_methods → Which HTTP methods are allowed. ['*'] = all methods.
+
+allowed_origins → Which URLs can call your API. For dev, this is usually http://localhost:5173 (React Vite default).
+
+allowed_headers → Request headers allowed. ['*'] = all headers.
+
+supports_credentials → true if using fetch or axios with { credentials: 'include' } (for cookies, sessions).
+
+
+
+
+Add Frontend URL to Laravel Config
+We’ll store the frontend base URL in Laravel config so we can easily build full short links.
+
+In config/app.php:
+'front_url' => env('FRONT_URL', 'http://localhost:5173'),
+
+
+Set in .env
+In .env:
+FRONT_URL=http://localhost:5173
+
+
+
+
